@@ -1,0 +1,16 @@
+<div>
+    @if (this.agregar) {
+        <form [formGroup]="formularioAgregarListaDeTareas" (ngSubmit)="AgregarListaDeTareas()">
+            <input type="text" formControlName="titulo" placeholder="Titulo" />
+            
+            <div>
+                <button type="submit">Añadir lista</button>
+                <button (click)="this.MostraroOcultarFormulario()">Cancelar</button>
+            </div>
+        </form>
+    }@else {
+        <button (click)="this.MostraroOcultarFormulario()">
+            Añadir otra lista
+        </button>
+    }
+</div>
