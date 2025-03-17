@@ -1,0 +1,40 @@
+<div 
+    class=" text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-500 ease-in-out border-2 border-transparent flex flex-col gap-4 w-64 p-2"
+    [ngClass]="{'bg-gray-500/30 hover:bg-gray-600/50': !this.agregar, 'bg-black': this.agregar}"
+>
+    @if (this.agregar) {
+        <form [formGroup]="formularioAgregarListaDeTareas" (ngSubmit)="AgregarListaDeTareas()" 
+            class="flex flex-col gap-2 animate-fade-in transition-all duration-500 ease-in-out"
+        >
+            
+            <!-- Campo para el título -->
+            <input 
+                type="text" 
+                formControlName="titulo" 
+                placeholder="Introduzca el título de la lista..." 
+                class="w-full bg-gray-600/50 border-1 rounded-sm border-gray-400/60 focus:border-white outline-none p-1 text-md focus:ring-1 focus:ring-white transition-all duration-300"
+                [ngClass]="{'border-red-500': formularioAgregarListaDeTareas.get('titulo')?.invalid && (formularioAgregarListaDeTareas.get('titulo')?.touched)}"
+            />
+
+            <!-- Botones de acción -->
+            <div class="flex justify-start gap-2">
+                <button type="submit" 
+                    class="bg-blue-400 hover:bg-blue-500 font-medium cursor-pointer text-black px-3 py-1 rounded-sm transition-all duration-300 ease-in-out transform hover:scale-105"
+                >
+                    Añadir lista
+                </button>
+                <button type="button" class="cursor-pointer p-2 rounded-sm hover:bg-gray-500/30 transition-all duration-300 ease-in-out transform hover:scale-105" 
+                    (click)="this.MostraroOcultarFormulario()" title="Cancelar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="m291-240-51-51 189-189-189-189 51-51 189 189 189-189 51 51-189 189 189 189-51 51-189-189-189 189Z"/></svg>
+                </button>
+            </div>
+        </form>
+    } @else {
+        <button (click)="this.MostraroOcultarFormulario()" 
+            class="flex gap-2 cursor-pointer items-center text-white p-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72v-204Z"/></svg>
+            Añadir otra lista
+        </button>
+    }
+</div>

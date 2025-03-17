@@ -1,0 +1,18 @@
+<div class="h-svh w-full flex flex-col bg-gray-800">
+    <header class="flex justify-center items-center bg-gray-900/30 p-3">
+        <h1 class="text-2xl font-bold text-white">Tareas</h1>
+
+    </header>
+    
+    <div class="flex w-full h-full overflow-x-auto gap-3 p-3">
+        <ul class="flex gap-3">
+            @for (lista of listaTareas; track lista.id) {
+                <li>
+                    <app-lista-de-tareas [ListaDeTareas]="lista"></app-lista-de-tareas>
+                </li>
+            } 
+        </ul>
+
+        <app-agregar-lista-de-tarea></app-agregar-lista-de-tarea>
+    </div>
+</div>
