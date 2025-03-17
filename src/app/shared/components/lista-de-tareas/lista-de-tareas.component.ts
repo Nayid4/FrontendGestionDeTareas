@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ListaDeTareas } from '../../../core/models/ListaDeTareas';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { TareaComponent } from '../tarea/tarea.component';
@@ -6,6 +6,7 @@ import { AgregarTareaComponent } from "../agregar-tarea/agregar-tarea.component"
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
+import { Console } from 'console';
 
 @Component({
     selector: 'app-lista-de-tareas',
@@ -21,15 +22,19 @@ import { Subject, takeUntil } from 'rxjs';
     styleUrl: './lista-de-tareas.component.css'
 })
 export class ListaDeTareasComponent implements OnInit, OnDestroy {
+
   @Input() ListaDeTareas!: ListaDeTareas;
   formularioListaDeTareas!: FormGroup;
   editar: boolean = false;
+  filtro: string = 'Todas';
+
 
   private unsubscribe$ = new Subject<void>();
 
   constructor(
     private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
+    private cdRef: ChangeDetectorRef,
   ) { }
 
   ngOnDestroy(): void {
@@ -74,6 +79,38 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
   cancelarEdicion() {
     this.editar = false;
     this.inicializarFormulario();
+  }
+
+  AjusteDeLista(evento: boolean | undefined, estado?: string): void {
+    
+    if (evento === undefined) {
+      return;
+    }
+
+    if (evento) {
+
+      this.listaDeTareasService.FiltrarPorEstado(this.ListaDeTareas.id, estado ?? 'Todas')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (listaDeTareas) => {
+          this.ListaDeTareas = listaDeTareas;
+          this.cdRef.detectChanges();
+        }
+      });
+    }
+  }
+
+
+  filtrarTareas(evento: Event) {
+    const estado = (evento.target as HTMLButtonElement).value;
+
+    if (estado === null) {
+      return;
+    }
+
+    this.AjusteDeLista(true, estado);
+
+    this.filtro = estado!;
   }
   
 }

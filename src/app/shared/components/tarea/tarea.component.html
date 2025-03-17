@@ -4,11 +4,11 @@
     <form [formGroup]="formularioTarea" (ngSubmit)="EditarTarea()" class="flex flex-col gap-2 flex-grow">
         <div class="flex items-center gap-2">
             <!-- Checkbox para marcar la tarea como completada -->
-                <input 
+            <input 
                 type="checkbox" 
                 formControlName="estadoTarea" 
                 class="rounded-full cursor-pointer" 
-                (change)="cambiarEstadoTarea()" 
+                (click)="cambiarEstadoTarea()" 
             />
 
             @if (editar) {
@@ -58,7 +58,7 @@
     <!-- Botones de opciones -->
     @if (!editar) {
 
-        <div class="flex flex-col gap-1 flex-grow transition-all duration-300 ease-in-out">
+        <div class="flex flex-col justify-start gap-1 w-full transition-all duration-300 ease-in-out">
             <h3 class="text-lg px-1 borber-1 font-semibold">{{ Tarea.titulo }}</h3>
             <p class="text-white/80 borber-1 px-1 text-sm">{{ Tarea.descripcion }}</p>
         </div>

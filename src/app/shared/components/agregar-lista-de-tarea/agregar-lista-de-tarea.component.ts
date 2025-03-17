@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/internal/Subject';
@@ -17,7 +17,7 @@ import { takeUntil } from 'rxjs';
     styleUrl: './agregar-lista-de-tarea.component.css'
 })
 export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
-  
+   
   agregar: boolean = false;
   formularioAgregarListaDeTareas!: FormGroup;
   private unsubscribe$ = new Subject<void>();
@@ -58,6 +58,7 @@ export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
       next: () => {
         this.incializarFormulario();
         this.agregar = false;
+        
       }
     })
   }

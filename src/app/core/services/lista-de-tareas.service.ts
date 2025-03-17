@@ -54,31 +54,29 @@ export class ListaDeTareasService {
     );
   }
 
-  FiltrarPorEstado(idListaDeTareas: string, estadoTarea: string): Observable<ListaDeTareas[]> {
-    return this.http.post<ListaDeTareas[]>(`${this.api}/${this.endpoint}/filtrar-por-estado/${idListaDeTareas}`, { idListaDeTareas, estado: estadoTarea });
+  FiltrarPorEstado(idListaDeTareas: string, estadoTarea: string): Observable<ListaDeTareas> {
+    return this.http.post<ListaDeTareas>(`${this.api}/${this.endpoint}/filtrar-por-estado/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, estadoTarea: estadoTarea });
   }
 
   AgregarTarea(idListaDeTareas: string, tarea: ComandoTarea): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/agregar-tarea/${idListaDeTareas}`, { idListaDeTareas, tarea }).pipe(
+    return this.http.post<void>(`${this.api}/${this.endpoint}/agregar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea }).pipe(
       tap(() => this.notifyUpdate())
     );
   }
 
   EliminarTarea(idListaDeTareas: string, idTarea: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/eliminar-tarea/${idListaDeTareas}`, { idListaDeTareas, idTarea }).pipe(
+    return this.http.post<void>(`${this.api}/${this.endpoint}/eliminar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, idTarea: idTarea }).pipe(
       tap(() => this.notifyUpdate())
     );
   }
 
   ActualizarTarea(idListaDeTareas: string, tarea: ComandoTarea): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-tarea/${idListaDeTareas}`, { idListaDeTareas, tarea }).pipe(
+    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea }).pipe(
       tap(() => this.notifyUpdate())
     );
   }
 
   ActualizarEstadoDeTarea(idListaDeTareas: string, idTarea: string, estadoTarea: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-estado-de-tarea/${idListaDeTareas}`, { idListaDeTareas, idTarea, estado: estadoTarea }).pipe(
-      tap(() => this.notifyUpdate())
-    );
+    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-estado-de-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, idTarea: idTarea, estado: estadoTarea })
   }
 }

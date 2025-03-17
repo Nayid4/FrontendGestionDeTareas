@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/internal/Subject';
@@ -19,6 +19,7 @@ import { takeUntil } from 'rxjs';
 })
 export class AgregarTareaComponent implements OnInit ,OnDestroy {
   @Input() IdListaDeTareas!: string;
+  @Output() TareaAgregada = new EventEmitter<boolean>();
 
   agregar: boolean = false;
   formularioAgregarTarea!: FormGroup;
@@ -67,6 +68,7 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
       next: () => {
         this.incializarFormulario();
         this.agregar = false;
+        this.TareaAgregada.emit(true);
       }
     })
   }
