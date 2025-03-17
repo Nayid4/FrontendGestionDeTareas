@@ -7,15 +7,19 @@ import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
 import { AlertaService } from '../../../core/services/alerta.service';
+import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
+import { AgregarIconoComponent } from "../../icons/agregar-icono/agregar-icono.component";
 
 @Component({
     selector: 'app-agregar-tarea',
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        CommonModule
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    CerrarIconoComponent,
+    AgregarIconoComponent
+],
     templateUrl: './agregar-tarea.component.html',
     styleUrl: './agregar-tarea.component.css'
 })

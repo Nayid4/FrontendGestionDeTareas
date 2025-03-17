@@ -6,15 +6,23 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertaService } from '../../../core/services/alerta.service';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
+import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.component";
+import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
+import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
+import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
 
 @Component({
     selector: 'app-tarea',
     standalone: true,
     imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      CommonModule
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    EditarIconoComponent,
+    EliminarIconoComponent,
+    CerrarIconoComponent,
+    ValidarIconoComponent
+],
     templateUrl: './tarea.component.html',
     styleUrl: './tarea.component.css'
 })

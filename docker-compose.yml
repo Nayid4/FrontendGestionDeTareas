@@ -4,12 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - ENV=development  # Configura el entorno en el build
+        - ENV=docker  # Configura el entorno en el build
     ports:
-      - "4200:4200"  # Expone el puerto 4200 del contenedor en el 4200 del host
+      - "4300:4200"  # Expone el puerto 4200 del contenedor en el 4200 del host
     restart: always
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=docker
     networks:
       - app-network
 

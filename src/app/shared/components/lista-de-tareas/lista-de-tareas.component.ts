@@ -8,17 +8,27 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
 import { AlertaService } from '../../../core/services/alerta.service';
+import { FiltroIconoComponent } from "../../icons/filtro-icono/filtro-icono.component";
+import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.component";
+import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
+import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
+import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
 
 @Component({
     selector: 'app-lista-de-tareas',
     standalone: true,
     imports: [
-        TareaComponent,
-        AgregarTareaComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        CommonModule
-    ],
+    TareaComponent,
+    AgregarTareaComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    FiltroIconoComponent,
+    EditarIconoComponent,
+    EliminarIconoComponent,
+    CerrarIconoComponent,
+    ValidarIconoComponent
+],
     templateUrl: './lista-de-tareas.component.html',
     styleUrl: './lista-de-tareas.component.css'
 })
