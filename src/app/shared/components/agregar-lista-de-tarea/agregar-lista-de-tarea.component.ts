@@ -4,14 +4,14 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
-  selector: 'app-agregar-lista-de-tarea',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './agregar-lista-de-tarea.component.html',
-  styleUrl: './agregar-lista-de-tarea.component.css'
+    selector: 'app-agregar-lista-de-tarea',
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './agregar-lista-de-tarea.component.html',
+    styleUrl: './agregar-lista-de-tarea.component.css'
 })
 export class AgregarListaDeTareaComponent  implements OnInit ,OnDestroy {
   

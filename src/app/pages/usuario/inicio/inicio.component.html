@@ -1,10 +1,11 @@
-<div class="h-full w-full flex flex-col">
+<div class="h-svh w-full flex flex-col bg-gray-400">
     <header>
         <h1>Tareas</h1>
+
     </header>
     
-    <div class="flex w-full overflow-x-auto">
-        <ul class="flex">
+    <div class="flex w-full h-full overflow-x-auto gap-3 p-3">
+        <ul class="flex gap-3">
             @for (lista of listaTareas; track lista.id) {
                 <li>
                     <app-lista-de-tareas [ListaDeTareas]="lista"></app-lista-de-tareas>

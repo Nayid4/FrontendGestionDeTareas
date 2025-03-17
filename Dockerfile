@@ -1,5 +1,5 @@
 
-FROM node:18-alpine AS dev-deps
+FROM node:20-alpine AS dev-deps
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # - - - -- - - - - Paso 2 -- - - - -- - - - -- 
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
     
 WORKDIR /app
 
@@ -28,7 +28,8 @@ FROM nginx:alpine AS prod
 EXPOSE 4200
 
 # Copia el build generado al directorio de Nginx
-COPY --from=builder /app/dist/frontend-angular/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/frontend-gestion-de-tareas/browser /usr/share/nginx/html
+
 
 # Arranca Nginx
 CMD ["nginx", "-g", "daemon off;"]

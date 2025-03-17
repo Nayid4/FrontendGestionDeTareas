@@ -5,14 +5,14 @@ import { ListaDeTareasComponent } from '../../../shared/components/lista-de-tare
 import { AgregarListaDeTareaComponent } from "../../../shared/components/agregar-lista-de-tarea/agregar-lista-de-tarea.component";
 
 @Component({
-  selector: 'app-inicio',
-  standalone: true,
-  imports: [
-    ListaDeTareasComponent,
-    AgregarListaDeTareaComponent
-],
-  templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.css'
+    selector: 'app-inicio',
+    standalone: true,
+    imports: [
+        ListaDeTareasComponent,
+        AgregarListaDeTareaComponent
+    ],
+    templateUrl: './inicio.component.html',
+    styleUrl: './inicio.component.css'
 })
 export class InicioComponent implements OnInit {
 

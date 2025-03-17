@@ -5,14 +5,14 @@ import { Subject } from 'rxjs/internal/Subject';
 import { ComandoTarea } from '../../../core/models/Tarea';
 
 @Component({
-  selector: 'app-agregar-tarea',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './agregar-tarea.component.html',
-  styleUrl: './agregar-tarea.component.css'
+    selector: 'app-agregar-tarea',
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './agregar-tarea.component.html',
+    styleUrl: './agregar-tarea.component.css'
 })
 export class AgregarTareaComponent implements OnInit ,OnDestroy {
   @Input() IdListaDeTareas!: string;

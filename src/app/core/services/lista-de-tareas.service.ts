@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ListaDeTareas } from '../models/ListaDeTareas';
 import { ComandoTarea } from '../models/Tarea';
 import { environment } from '../../../environments/environment.development';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
