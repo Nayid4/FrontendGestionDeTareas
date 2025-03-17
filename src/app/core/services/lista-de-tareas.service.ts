@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ListaDeTareas } from '../models/ListaDeTareas.model';
-import { ComandoTarea } from '../models/Tarea.model';
 import { environment } from '../../../environments/environment.development';
 import { BehaviorSubject } from 'rxjs';
 import { 
