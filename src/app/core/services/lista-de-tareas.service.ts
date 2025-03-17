@@ -1,10 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { ListaDeTareas } from '../models/ListaDeTareas';
-import { ComandoTarea } from '../models/Tarea';
+import { ListaDeTareas } from '../models/ListaDeTareas.model';
+import { ComandoTarea } from '../models/Tarea.model';
 import { environment } from '../../../environments/environment.development';
 import { BehaviorSubject } from 'rxjs';
+import { 
+  CrearListaDeTareas, 
+  ActualizarListaDeTareas, 
+  FiltrarPorEstado, 
+  AgregarTarea, 
+  EliminarTarea, 
+  ActualizarEstadoDeTarea 
+} from '../models/comandos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +22,11 @@ export class ListaDeTareasService {
   private api: string = environment.apiUrlBase;
   private endpoint: string = 'lista-de-tareas';
 
-  // BehaviorSubject para gestionar la lista de tareas
   private listaDeTareasSubject = new BehaviorSubject<ListaDeTareas[]>([]);
   listaDeTareas$ = this.listaDeTareasSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    this.cargarLista(); // Cargar las listas al iniciar el servicio
+    this.cargarLista();
   }
 
   private cargarLista() {
@@ -36,14 +43,14 @@ export class ListaDeTareasService {
     return this.listaDeTareas$;
   }
 
-  Crear(titulo: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}`, { titulo }).pipe(
-      tap(() => this.notifyUpdate()) // Actualizar la lista después de la creación
+  Crear(data: CrearListaDeTareas): Observable<void> {
+    return this.http.post<void>(`${this.api}/${this.endpoint}`, data).pipe(
+      tap(() => this.notifyUpdate())
     );
   }
 
-  Actualizar(id: string, titulo: string): Observable<void> {
-    return this.http.put<void>(`${this.api}/${this.endpoint}/${id}`, { id, titulo }).pipe(
+  Actualizar(data: ActualizarListaDeTareas): Observable<void> {
+    return this.http.put<void>(`${this.api}/${this.endpoint}/${data.id}`, data).pipe(
       tap(() => this.notifyUpdate())
     );
   }
@@ -54,25 +61,23 @@ export class ListaDeTareasService {
     );
   }
 
-  FiltrarPorEstado(idListaDeTareas: string, estadoTarea: string): Observable<ListaDeTareas> {
-    return this.http.post<ListaDeTareas>(`${this.api}/${this.endpoint}/filtrar-por-estado/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, estadoTarea: estadoTarea });
+  FiltrarPorEstado(data: FiltrarPorEstado): Observable<ListaDeTareas> {
+    return this.http.post<ListaDeTareas>(`${this.api}/${this.endpoint}/filtrar-por-estado/${data.idListaDeTareas}`, data);
   }
 
-  AgregarTarea(idListaDeTareas: string, tarea: ComandoTarea): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/agregar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea })
-    
+  AgregarTarea(data: AgregarTarea): Observable<void> {
+    return this.http.post<void>(`${this.api}/${this.endpoint}/agregar-tarea/${data.idListaDeTareas}`, data);
   }
 
-  EliminarTarea(idListaDeTareas: string, idTarea: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/eliminar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, idTarea: idTarea }
-    );
+  EliminarTarea(data: EliminarTarea): Observable<void> {
+    return this.http.post<void>(`${this.api}/${this.endpoint}/eliminar-tarea/${data.idListaDeTareas}`, data);
   }
 
-  ActualizarTarea(idListaDeTareas: string, tarea: ComandoTarea): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea })
+  ActualizarTarea(data: AgregarTarea): Observable<void> {
+    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-tarea/${data.idListaDeTareas}`, data);
   }
 
-  ActualizarEstadoDeTarea(idListaDeTareas: string, idTarea: string, estadoTarea: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-estado-de-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, idTarea: idTarea, estado: estadoTarea })
+  ActualizarEstadoDeTarea(data: ActualizarEstadoDeTarea): Observable<void> {
+    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-estado-de-tarea/${data.idListaDeTareas}`, data);
   }
 }

@@ -1,4 +1,4 @@
-import { Tarea } from "./Tarea";
+import { Tarea } from "./Tarea.model";
 
 export interface ListaDeTareas {
     id: string,

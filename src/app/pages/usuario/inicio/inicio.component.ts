@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
-import { ListaDeTareas } from '../../../core/models/ListaDeTareas';
+import { ListaDeTareas } from '../../../core/models/ListaDeTareas.model';
 import { ListaDeTareasComponent } from '../../../shared/components/lista-de-tareas/lista-de-tareas.component';
 import { AgregarListaDeTareaComponent } from "../../../shared/components/agregar-lista-de-tarea/agregar-lista-de-tarea.component";
 import { Subject } from 'rxjs';

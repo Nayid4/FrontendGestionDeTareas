@@ -1,5 +1,5 @@
 
-FROM node:20-alpine AS dev-deps
+FROM node:22-alpine AS dev-deps
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY --from=dev-deps /app/node_modules ./node_modules
 COPY . .
 
 # Usa el entorno de desarrollo o producción según una variable de entorno
-ARG ENV=development
+ARG ENV=docker
 RUN npm run build --configuration=$ENV
 
 # - - - -- - - - - Paso 3 -- - - - -- - - - -- 

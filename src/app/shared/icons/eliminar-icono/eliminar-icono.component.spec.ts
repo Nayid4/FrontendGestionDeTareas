@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PaginaDeCargaComponent } from './pagina-de-carga.component';
+import { EliminarIconoComponent } from './eliminar-icono.component';
 
-describe('PaginaDeCargaComponent', () => {
-  let component: PaginaDeCargaComponent;
-  let fixture: ComponentFixture<PaginaDeCargaComponent>;
+describe('EliminarIconoComponent', () => {
+  let component: EliminarIconoComponent;
+  let fixture: ComponentFixture<EliminarIconoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaginaDeCargaComponent]
+      imports: [EliminarIconoComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PaginaDeCargaComponent);
+    fixture = TestBed.createComponent(EliminarIconoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

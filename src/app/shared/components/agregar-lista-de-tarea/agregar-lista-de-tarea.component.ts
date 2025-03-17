@@ -6,15 +6,17 @@ import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { AlertaService } from '../../../core/services/alerta.service';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
+import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
 
 @Component({
     selector: 'app-agregar-lista-de-tarea',
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        CommonModule
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    CerrarIconoComponent
+],
     templateUrl: './agregar-lista-de-tarea.component.html',
     styleUrl: './agregar-lista-de-tarea.component.css'
 })

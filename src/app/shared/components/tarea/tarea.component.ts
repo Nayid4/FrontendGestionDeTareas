@@ -1,20 +1,29 @@
 import { Component, EventEmitter, Input,  OnDestroy,  OnInit, Output } from '@angular/core';
-import { Tarea } from '../../../core/models/Tarea';
+import { Tarea } from '../../../core/models/Tarea.model';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { AlertaService } from '../../../core/services/alerta.service';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
+import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.component";
+import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
+import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
+import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
+import { ActualizarEstadoDeTarea, AgregarTarea, EliminarTarea } from '../../../core/models/comandos.model';
 
 @Component({
     selector: 'app-tarea',
     standalone: true,
     imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      CommonModule
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    EditarIconoComponent,
+    EliminarIconoComponent,
+    CerrarIconoComponent,
+    ValidarIconoComponent
+],
     templateUrl: './tarea.component.html',
     styleUrl: './tarea.component.css'
 })
@@ -70,7 +79,12 @@ export class TareaComponent implements OnInit, OnDestroy {
       estado: this.formularioTarea.value.estadoTarea ? 'Completada' : 'Pendiente'
     };
 
-    this.listaDeTareasService.ActualizarTarea(this.IdListaDeTareas, tareaActualizada)
+    const comando: AgregarTarea = {
+      idListaDeTareas: this.IdListaDeTareas,
+      tarea: tareaActualizada
+    };
+
+    this.listaDeTareasService.ActualizarTarea(comando)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: () => {
@@ -82,7 +96,13 @@ export class TareaComponent implements OnInit, OnDestroy {
   }
 
   EliminarTarea(id: string) {
-    this.listaDeTareasService.EliminarTarea(this.IdListaDeTareas, id)
+
+    const comando: EliminarTarea = {
+      idListaDeTareas: this.IdListaDeTareas,
+      idTarea: id
+    };
+
+    this.listaDeTareasService.EliminarTarea(comando)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: () => {
@@ -97,7 +117,13 @@ export class TareaComponent implements OnInit, OnDestroy {
       estado: this.formularioTarea.value.estadoTarea  ? 'Pendiente' : 'Completada'
     });
 
-    this.listaDeTareasService.ActualizarEstadoDeTarea(this.IdListaDeTareas, this.Tarea.id, this.formularioTarea.value.estado)
+    const comando: ActualizarEstadoDeTarea = {
+      idListaDeTareas: this.IdListaDeTareas,
+      idTarea: this.Tarea.id,
+      estado: this.formularioTarea.value.estado
+    }
+
+    this.listaDeTareasService.ActualizarEstadoDeTarea(comando)
     .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: () => {
         this.TareaAjustada.emit(true);

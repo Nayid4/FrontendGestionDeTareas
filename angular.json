@@ -62,7 +62,17 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "docker": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker.ts"
+                }
+              ],
+              "outputHashing": "all"
             }
+
           },
           "defaultConfiguration": "production"
         },
@@ -74,8 +84,13 @@
             },
             "development": {
               "buildTarget": "FrontendGestionDeTareas:build:development"
+            },
+            "docker": {
+              "buildTarget": "FrontendGestionDeTareas:build:docker"
             }
+
           },
+          
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
