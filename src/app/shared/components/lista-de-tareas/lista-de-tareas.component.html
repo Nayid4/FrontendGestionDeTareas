@@ -1,0 +1,75 @@
+<div class="flex flex-col gap-2 bg-black w-64 p-4 rounded-xl ">
+    
+    <div class="flex justify-between items-center">
+        @if (this.editar) {
+            <form [formGroup]="formularioListaDeTareas" class="flex gap-2" (ngSubmit)="EditarListaDeTareas()">
+                <!-- Campo para el título -->
+                <input 
+                type="text" 
+                formControlName="titulo" 
+                placeholder="Introduzca el título de la lista..." 
+                class="w-full text-white bg-gray-600/50 border-1 rounded-sm border-gray-400/60 focus:border-white outline-none p-1 text-md focus:ring-1 focus:ring-white transition-all duration-300"
+                [ngClass]="{'border-red-500': this.formularioListaDeTareas.get('descripcion')?.invalid && (this.formularioListaDeTareas.get('descripcion')?.touched)}"
+                />
+
+                <!-- Botones de acción -->
+                <div class="flex  gap-1 ">
+                    <!-- Botón de Gardar -->
+                    <button type="submit" class="cursor-pointer p-1 rounded-full hover:bg-gray-500/30 transition-all duration-200" title="Guardar">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M389-267 195-460l51-52 143 143 325-324 51 51-376 375Z"/></svg>
+                    </button>
+
+                    <!-- Botón de Cancelar -->
+                    <button class="cursor-pointer p-1 rounded-full hover:bg-gray-500/30 transition-all duration-200" (click)="cancelarEdicion()" title="Cancelar">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="m291-240-51-51 189-189-189-189 51-51 189 189 189-189 51 51-189 189 189 189-51 51-189-189-189 189Z"/></svg>
+                    </button>
+                </div>
+            </form>
+        }@else {
+            <h2 class="text-white text-md font-bold">{{ ListaDeTareas.titulo }}</h2>
+
+            <div class="flex gap-1">
+                <!--<button class="cursor-pointer p-1 rounded-full hover:bg-gray-500/30 transition-all duration-200"  title="Filtrar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M456.18-192Q446-192 439-198.9t-7-17.1v-227L197-729q-9-12-2.74-25.5Q200.51-768 216-768h528q15.49 0 21.74 13.5Q772-741 763-729L528-443v227q0 10.2-6.88 17.1-6.89 6.9-17.06 6.9h-47.88ZM480-498l162-198H317l163 198Zm0 0Z"/></svg>
+                </button>-->
+
+                <button class="cursor-pointer p-1 rounded-full hover:bg-gray-500/30 transition-all duration-200" (click)="EliminarListaDeTareas(ListaDeTareas.id)" title="Eliminar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                </button>
+    
+                <button class="cursor-pointer p-1 rounded-full hover:bg-gray-500/30 transition-all duration-200" (click)="MostraroOcultarFormulario()" title="Editar">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z"/></svg>
+                </button>
+            </div>
+        }
+
+    </div>
+    <div class="flex flex-col gap-2">
+        <div class="flex gap-1 items-center justify-end">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#e3e3e3"><path d="M384-264v-72h192v72H384ZM240-444v-72h480v72H240Zm-96-180v-72h672v72H144Z"/></svg>
+            <select class="cursor-pointer p-1 rounded-full bg-gray-700 text-white border-none outline-none px-2" (change)="filtrarTareas($event)">
+                <option value="Todas">Todas</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Completada">Completada</option>
+            </select>
+        </div>
+
+        <ul class="flex flex-col gap-2">
+            @for (tarea of ListaDeTareas.tareas; track tarea.id) {
+                <li>
+                    <app-tarea 
+                        [Tarea]="tarea" 
+                        [IdListaDeTareas]="ListaDeTareas.id"
+                        (TareaAjustada)="AjusteDeLista($event, this.filtro)"
+                    ></app-tarea>
+                </li>
+            }
+        </ul>
+    </div>
+    
+
+    <app-agregar-tarea 
+        [IdListaDeTareas]="ListaDeTareas.id"
+        (TareaAgregada)="AjusteDeLista($event, this.filtro)"
+    ></app-agregar-tarea>
+</div>

@@ -1,0 +1,16 @@
+<div class="fixed top-5 right-5 space-y-3 z-50">
+    @for (alerta of alertas; track $index) {
+        <div
+            [ngClass]="{
+            'bg-green-500': alerta.tipo === 'exito',
+            'bg-red-500': alerta.tipo === 'error',
+            'bg-yellow-500': alerta.tipo === 'advertencia',
+            'bg-blue-500': alerta.tipo === 'info'
+            }"
+            class="text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-3 transition-opacity duration-300">
+        <span class="font-semibold">{{ alerta.mensaje }}</span>
+        </div>
+    }
+    
+</div>
+  
