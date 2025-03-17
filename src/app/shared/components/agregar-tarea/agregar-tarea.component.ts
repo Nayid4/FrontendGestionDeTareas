@@ -3,6 +3,7 @@ import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.ser
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/internal/Subject';
 import { ComandoTarea } from '../../../core/models/Tarea';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-agregar-tarea',
@@ -10,6 +11,7 @@ import { ComandoTarea } from '../../../core/models/Tarea';
     imports: [
         FormsModule,
         ReactiveFormsModule,
+        CommonModule
     ],
     templateUrl: './agregar-tarea.component.html',
     styleUrl: './agregar-tarea.component.css'

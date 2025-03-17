@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/internal/Subject';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-agregar-lista-de-tarea',
@@ -9,6 +10,7 @@ import { Subject } from 'rxjs/internal/Subject';
     imports: [
         FormsModule,
         ReactiveFormsModule,
+        CommonModule
     ],
     templateUrl: './agregar-lista-de-tarea.component.html',
     styleUrl: './agregar-lista-de-tarea.component.css'
