@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs';
 import { AlertaService } from '../../../core/services/alerta.service';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
 import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
+import { CrearListaDeTareas } from '../../../core/models/comandos.model';
 
 @Component({
     selector: 'app-agregar-lista-de-tarea',
@@ -59,8 +60,11 @@ export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
       return;
     }
 
+    const comando: CrearListaDeTareas = {
+      titulo: this.formularioAgregarListaDeTareas.get('titulo')?.value
+    }
 
-    this.listaDeTareasService.Crear(this.formularioAgregarListaDeTareas.get('titulo')?.value)
+    this.listaDeTareasService.Crear(comando)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: () => {
