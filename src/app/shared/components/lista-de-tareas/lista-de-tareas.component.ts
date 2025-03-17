@@ -40,7 +40,7 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
   editar: boolean = false;
   filtro: string = 'Todas';
 
-  listaDeFiltros: string[] = ['Todas', 'Completadas', 'Pendientes'];
+  listaDeFiltros: string[] = ['Todas', 'Completada', 'Pendiente'];
 
   private unsubscribe$ = new Subject<void>();
 
