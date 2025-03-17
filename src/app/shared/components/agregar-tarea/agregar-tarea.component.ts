@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Subject } from 'rxjs/internal/Subject';
 import { ComandoTarea } from '../../../core/models/Tarea';
 import { CommonModule } from '@angular/common';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-agregar-tarea',
@@ -60,9 +61,12 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
       estado: this.formularioAgregarTarea.get('estado')?.value
     }
 
-    this.listaDeTareasService.AgregarTarea(this.IdListaDeTareas, tarea).subscribe({
+    this.listaDeTareasService.AgregarTarea(this.IdListaDeTareas, tarea)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: () => {
-        this.formularioAgregarTarea.reset();
+        this.incializarFormulario();
+        this.agregar = false;
       }
     })
   }

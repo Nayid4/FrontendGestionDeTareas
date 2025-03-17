@@ -1,8 +1,9 @@
-import { Component, Input,  OnInit } from '@angular/core';
+import { Component, Input,  OnDestroy,  OnInit } from '@angular/core';
 import { Tarea } from '../../../core/models/Tarea';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-tarea',
@@ -15,18 +16,24 @@ import { CommonModule } from '@angular/common';
     templateUrl: './tarea.component.html',
     styleUrl: './tarea.component.css'
 })
-export class TareaComponent implements OnInit {
-
+export class TareaComponent implements OnInit, OnDestroy {
   @Input() Tarea!: Tarea;
   @Input() IdListaDeTareas!: string;
 
   editar: boolean = false;
   formularioTarea!: FormGroup;
 
+  private unsubscribe$ = new Subject<void>();
+
   constructor(
     private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
   ) { }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
   ngOnInit(): void {
     this.inicializarFormulario();
@@ -56,9 +63,13 @@ export class TareaComponent implements OnInit {
       estado: this.formularioTarea.value.estadoTarea ? 'Completada' : 'Pendiente'
     };
 
-    console.log(this.formularioTarea.value.estadoTarea);
-
-    //this.listaDeTareasService.ActualizarTarea(this.IdListaDeTareas, tareaActualizada).subscribe();
+    this.listaDeTareasService.ActualizarTarea(this.IdListaDeTareas, tareaActualizada)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: () => {
+        this.editar = false;
+      }
+    });
   }
 
   EliminarTarea(id: string) {
@@ -70,11 +81,12 @@ export class TareaComponent implements OnInit {
       estado: this.formularioTarea.value.estadoTarea ? 'Completada' : 'Pendiente'
     });
 
-    console.log(this.formularioTarea.value.estado);
+    this.listaDeTareasService.ActualizarEstadoDeTarea(this.IdListaDeTareas, this.Tarea.id, this.formularioTarea.value.estado)
+    .pipe(takeUntil(this.unsubscribe$)).subscribe();
+  }
 
-    console.log(this.formularioTarea.value.estadoTarea);
-
-    this.listaDeTareasService.ActualizarEstadoDeTarea(this.IdListaDeTareas, this.Tarea.id, this.formularioTarea.value.estado).subscribe();
+  MostraroOcultarFormulario() {
+    this.editar = !this.editar;
   }
 
   cancelarEdicion() {

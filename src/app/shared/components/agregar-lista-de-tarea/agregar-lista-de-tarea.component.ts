@@ -3,6 +3,7 @@ import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.ser
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/internal/Subject';
 import { CommonModule } from '@angular/common';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-agregar-lista-de-tarea',
@@ -15,7 +16,7 @@ import { CommonModule } from '@angular/common';
     templateUrl: './agregar-lista-de-tarea.component.html',
     styleUrl: './agregar-lista-de-tarea.component.css'
 })
-export class AgregarListaDeTareaComponent  implements OnInit ,OnDestroy {
+export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
   
   agregar: boolean = false;
   formularioAgregarListaDeTareas!: FormGroup;
@@ -51,9 +52,12 @@ export class AgregarListaDeTareaComponent  implements OnInit ,OnDestroy {
     }
 
 
-    this.listaDeTareasService.Crear(this.formularioAgregarListaDeTareas.get('titulo')?.value).subscribe({
+    this.listaDeTareasService.Crear(this.formularioAgregarListaDeTareas.get('titulo')?.value)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: () => {
-        this.formularioAgregarListaDeTareas.reset();
+        this.incializarFormulario();
+        this.agregar = false;
       }
     })
   }
