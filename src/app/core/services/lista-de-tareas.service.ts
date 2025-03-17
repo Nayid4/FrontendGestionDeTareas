@@ -59,21 +59,17 @@ export class ListaDeTareasService {
   }
 
   AgregarTarea(idListaDeTareas: string, tarea: ComandoTarea): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/agregar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea }).pipe(
-      tap(() => this.notifyUpdate())
-    );
+    return this.http.post<void>(`${this.api}/${this.endpoint}/agregar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea })
+    
   }
 
   EliminarTarea(idListaDeTareas: string, idTarea: string): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/eliminar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, idTarea: idTarea }).pipe(
-      tap(() => this.notifyUpdate())
+    return this.http.post<void>(`${this.api}/${this.endpoint}/eliminar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, idTarea: idTarea }
     );
   }
 
   ActualizarTarea(idListaDeTareas: string, tarea: ComandoTarea): Observable<void> {
-    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea }).pipe(
-      tap(() => this.notifyUpdate())
-    );
+    return this.http.post<void>(`${this.api}/${this.endpoint}/actualizar-tarea/${idListaDeTareas}`, { idListaDeTareas: idListaDeTareas, tarea })
   }
 
   ActualizarEstadoDeTarea(idListaDeTareas: string, idTarea: string, estadoTarea: string): Observable<void> {

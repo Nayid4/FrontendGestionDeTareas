@@ -32,9 +32,29 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listaDeTareasService.listaDeTareas$.subscribe({
-      next: (listaTareas) => {
-        this.listaTareas = listaTareas;
+      next: (nuevaLista) => {
+        if (this.listaTareas.length === 0) {
+          // Si la lista está vacía, inicializa con los datos actuales
+          this.listaTareas = nuevaLista;
+        } else {
+          const idsAnteriores = new Set(this.listaTareas.map(t => t.id));
+          const idsNuevos = new Set(nuevaLista.map(t => t.id));
+  
+          if (nuevaLista.length > this.listaTareas.length) {
+            // Buscar la tarea que no estaba antes (agregada)
+            const nuevaTarea = nuevaLista.find(t => !idsAnteriores.has(t.id));
+            if (nuevaTarea) {
+              this.listaTareas = [...this.listaTareas, nuevaTarea];
+            }
+          } else if (nuevaLista.length < this.listaTareas.length) {
+            // Se eliminó una tarea, mantener solo las que siguen en la nueva lista
+            this.listaTareas = this.listaTareas.filter(t => idsNuevos.has(t.id));
+          }
+        }
       }
     });
   }
+  
+  
+  
 }

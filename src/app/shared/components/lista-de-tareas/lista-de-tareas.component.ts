@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ListaDeTareas } from '../../../core/models/ListaDeTareas';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { TareaComponent } from '../tarea/tarea.component';
@@ -21,7 +21,7 @@ import { Console } from 'console';
     templateUrl: './lista-de-tareas.component.html',
     styleUrl: './lista-de-tareas.component.css'
 })
-export class ListaDeTareasComponent implements OnInit, OnDestroy {
+export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() ListaDeTareas!: ListaDeTareas;
   formularioListaDeTareas!: FormGroup;
@@ -36,6 +36,12 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
   ) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ListaDeTareas']) {
+      
+    }
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -67,6 +73,8 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
     .subscribe({
       next: () => {
         this.editar = false;
+        this.ListaDeTareas.titulo = this.formularioListaDeTareas.get('titulo')?.value;
+        this.cdRef.detectChanges();
       }
     });
 
