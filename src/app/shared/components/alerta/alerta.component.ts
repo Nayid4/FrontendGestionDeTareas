@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertaService } from '../../../core/services/alerta.service';
-import { Alerta } from '../../../core/models/Alerta';
+import { Alerta } from '../../../core/models/Alerta.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

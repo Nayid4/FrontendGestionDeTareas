@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/internal/Subject';
-import { ComandoTarea } from '../../../core/models/Tarea';
+import { ComandoTarea } from '../../../core/models/Tarea.model';
 import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { FormularioUtilService } from '../../../core/services/formulario-util.service';
 import { AlertaService } from '../../../core/services/alerta.service';
 import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
 import { AgregarIconoComponent } from "../../icons/agregar-icono/agregar-icono.component";
+import { AgregarTarea } from '../../../core/models/comandos.model';
 
 @Component({
     selector: 'app-agregar-tarea',
@@ -59,7 +60,7 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
     this.agregar = !this.agregar;
   }
 
-  AgregarTarea() {
+  AgregarTareaAListaDeTareas() {
     if(this.formularioAgregarTarea.invalid){
       this.formularioUtilServicio.verificarFormulario(this.formularioAgregarTarea);
       return;
@@ -71,7 +72,12 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
       estado: this.formularioAgregarTarea.get('estado')?.value
     }
 
-    this.listaDeTareasService.AgregarTarea(this.IdListaDeTareas, tarea)
+    const comandoTarea: AgregarTarea = {
+      idListaDeTareas: this.IdListaDeTareas,
+      tarea: tarea
+    }
+
+    this.listaDeTareasService.AgregarTarea(comandoTarea)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: () => {

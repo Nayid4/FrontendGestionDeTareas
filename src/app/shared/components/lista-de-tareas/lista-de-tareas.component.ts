@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { ListaDeTareas } from '../../../core/models/ListaDeTareas';
+import { ListaDeTareas } from '../../../core/models/ListaDeTareas.model';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { TareaComponent } from '../tarea/tarea.component';
 import { AgregarTareaComponent } from "../agregar-tarea/agregar-tarea.component";
@@ -13,6 +13,7 @@ import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.comp
 import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
 import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
 import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
+import { ActualizarListaDeTareas, FiltrarPorEstado } from '../../../core/models/comandos.model';
 
 @Component({
     selector: 'app-lista-de-tareas',
@@ -39,6 +40,7 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
   editar: boolean = false;
   filtro: string = 'Todas';
 
+  listaDeFiltros: string[] = ['Todas', 'Completadas', 'Pendientes'];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -80,7 +82,12 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.listaDeTareasService.Actualizar(this.formularioListaDeTareas.get('id')?.value, this.formularioListaDeTareas.get('titulo')?.value)
+    const comando: ActualizarListaDeTareas = {
+      id: this.formularioListaDeTareas.get('id')?.value,
+      titulo: this.formularioListaDeTareas.get('titulo')?.value
+    }
+
+    this.listaDeTareasService.Actualizar(comando)
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe({
       next: () => {
@@ -110,7 +117,12 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
 
     if (evento) {
 
-      this.listaDeTareasService.FiltrarPorEstado(this.ListaDeTareas.id, estado ?? 'Todas')
+      const comando: FiltrarPorEstado = {
+        idListaDeTareas: this.ListaDeTareas.id,
+        estadoTarea: estado ?? 'Todas'
+      }
+
+      this.listaDeTareasService.FiltrarPorEstado(comando)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (listaDeTareas) => {

@@ -6,7 +6,7 @@ services:
       args:
         - ENV=docker  # Configura el entorno en el build
     ports:
-      - "4300:4200"  # Expone el puerto 4200 del contenedor en el 4200 del host
+      - "4200:80"  # Expone el puerto 4200 del contenedor en el 4200 del host
     restart: always
     environment:
       - NODE_ENV=docker

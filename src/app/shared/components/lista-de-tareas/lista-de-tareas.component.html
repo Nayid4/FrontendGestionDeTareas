@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-2 bg-black w-64 p-4 rounded-xl ">
+<div class="flex flex-col gap-2 bg-black w-64 p-4 rounded-xl transition-all duration-300 ease-in-out  ">
     
     <div class="flex justify-between items-center">
         @if (this.editar) {
@@ -46,9 +46,9 @@
         <div class="flex gap-1 items-center justify-end">
             <app-filtro-icono />
             <select class="cursor-pointer p-1 rounded-full bg-gray-700 text-white border-none outline-none px-2" (change)="filtrarTareas($event)">
-                <option value="Todas">Todas</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Completada">Completada</option>
+                @for (filtro of this.listaDeFiltros; track $index) {
+                    <option value="{{ filtro }}">{{ filtro }}</option>
+                }
             </select>
         </div>
 

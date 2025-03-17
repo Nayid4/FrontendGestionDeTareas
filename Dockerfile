@@ -1,5 +1,5 @@
 
-FROM node:20-alpine AS dev-deps
+FROM node:22-alpine AS dev-deps
 
 WORKDIR /app
 
@@ -24,8 +24,8 @@ RUN npm run build --configuration=$ENV
 # - - - -- - - - - Paso 3 -- - - - -- - - - -- 
 FROM nginx:alpine AS prod
 
-# Expone el puerto 4300 para el entorno de desarrollo
-EXPOSE 4300
+# Expone el puerto 4200 para el entorno de desarrollo
+EXPOSE 4200
 
 # Copia el build generado al directorio de Nginx
 COPY --from=builder /app/dist/frontend-gestion-de-tareas/browser /usr/share/nginx/html
