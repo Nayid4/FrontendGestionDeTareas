@@ -6,7 +6,6 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
-import { cargandoInterceptor } from './core/interceptors/cargando.interceptor';
 import { ReactiveFormsModule } from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
@@ -19,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([errorInterceptor, cargandoInterceptor])
+      withInterceptors([errorInterceptor])
     ),
     provideAnimations(),
     provideAnimations()
