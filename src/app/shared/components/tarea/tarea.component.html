@@ -22,6 +22,7 @@
                         [readonly]="!editar"
                         placeholder="Título"
                         class="text-lg font-semibold w-full  border-1 rounded-md border-gray-400/50 focus:border-white outline-none px-1  focus:ring-1 focus:ring-white transition-all duration-300"
+                        [ngClass]="{'border-red-500': this.formularioTarea.get('titulo')?.invalid && (this.formularioTarea.get('titulo')?.touched)}"
                     />
                     
                     <!-- Descripción de la tarea -->
@@ -31,6 +32,7 @@
                         placeholder="Descripción"
                         rows="3"
                         class="text-white/80 text-sm w-full resize-none custom-scroll border-1 rounded-md border-gray-400/50 focus:border-white outline-none px-1 focus:ring-1 focus:ring-white transition-all duration-300"
+                        [ngClass]="{'border-red-500': this.formularioTarea.get('descripcion')?.invalid && (this.formularioTarea.get('descripcion')?.touched)}"
                     ></textarea>
                     
                 </div>

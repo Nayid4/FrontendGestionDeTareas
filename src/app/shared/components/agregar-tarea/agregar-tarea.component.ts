@@ -5,6 +5,8 @@ import { Subject } from 'rxjs/internal/Subject';
 import { ComandoTarea } from '../../../core/models/Tarea';
 import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs';
+import { FormularioUtilService } from '../../../core/services/formulario-util.service';
+import { AlertaService } from '../../../core/services/alerta.service';
 
 @Component({
     selector: 'app-agregar-tarea',
@@ -28,6 +30,8 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
   constructor(
     private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
+    private alertaServicio: AlertaService,
+    private formularioUtilServicio: FormularioUtilService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +57,7 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
 
   AgregarTarea() {
     if(this.formularioAgregarTarea.invalid){
+      this.formularioUtilServicio.verificarFormulario(this.formularioAgregarTarea);
       return;
     }
 
@@ -69,6 +74,7 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
         this.incializarFormulario();
         this.agregar = false;
         this.TareaAgregada.emit(true);
+        this.alertaServicio.mostrarAlerta('exito','Tarea creada correctamente.');
       }
     })
   }

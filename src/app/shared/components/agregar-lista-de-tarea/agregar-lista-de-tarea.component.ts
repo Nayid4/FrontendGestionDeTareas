@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import { CommonModule } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { AlertaService } from '../../../core/services/alerta.service';
+import { FormularioUtilService } from '../../../core/services/formulario-util.service';
 
 @Component({
     selector: 'app-agregar-lista-de-tarea',
@@ -26,7 +27,8 @@ export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
   constructor(
     private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
-    private alertaServicio: AlertaService
+    private alertaServicio: AlertaService,
+    private formularioUtilServicio: FormularioUtilService
   ) { }
 
   ngOnInit(): void {
@@ -46,11 +48,12 @@ export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
 
   MostraroOcultarFormulario(){
     this.agregar = !this.agregar;
+    this.incializarFormulario();
   }
 
   AgregarListaDeTareas() {
     if(this.formularioAgregarListaDeTareas.invalid){
-      this.alertaServicio.mostrarAlerta('error','El campo titulo es requerido.');
+      this.formularioUtilServicio.verificarFormulario(this.formularioAgregarListaDeTareas);
       return;
     }
 
@@ -66,4 +69,5 @@ export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
     })
   }
 
+  
 }

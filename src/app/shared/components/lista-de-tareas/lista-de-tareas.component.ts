@@ -6,7 +6,8 @@ import { AgregarTareaComponent } from "../agregar-tarea/agregar-tarea.component"
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { Console } from 'console';
+import { FormularioUtilService } from '../../../core/services/formulario-util.service';
+import { AlertaService } from '../../../core/services/alerta.service';
 
 @Component({
     selector: 'app-lista-de-tareas',
@@ -21,7 +22,7 @@ import { Console } from 'console';
     templateUrl: './lista-de-tareas.component.html',
     styleUrl: './lista-de-tareas.component.css'
 })
-export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
+export class ListaDeTareasComponent implements OnInit, OnDestroy {
 
   @Input() ListaDeTareas!: ListaDeTareas;
   formularioListaDeTareas!: FormGroup;
@@ -35,13 +36,9 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
     private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
     private cdRef: ChangeDetectorRef,
+    private alertaServicio: AlertaService,
+    private formularioUtilServicio: FormularioUtilService
   ) { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['ListaDeTareas']) {
-      
-    }
-  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -60,11 +57,16 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   EliminarListaDeTareas(id: string): void {
-    this.listaDeTareasService.Eliminar(id).pipe(takeUntil(this.unsubscribe$)).subscribe();
+    this.listaDeTareasService.Eliminar(id).pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: () => {
+        this.alertaServicio.mostrarAlerta('exito','Lista de tareas eliminada correctamente.');
+      }
+    });
   }
 
   EditarListaDeTareas() {
     if(this.formularioListaDeTareas.invalid){
+      this.formularioUtilServicio.verificarFormulario(this.formularioListaDeTareas);
       return;
     }
 
@@ -75,6 +77,7 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
         this.editar = false;
         this.ListaDeTareas.titulo = this.formularioListaDeTareas.get('titulo')?.value;
         this.cdRef.detectChanges();
+        this.alertaServicio.mostrarAlerta('exito','Lista de tareas actualizada correctamente.');
       }
     });
 

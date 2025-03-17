@@ -4,6 +4,8 @@ import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.ser
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
+import { AlertaService } from '../../../core/services/alerta.service';
+import { FormularioUtilService } from '../../../core/services/formulario-util.service';
 
 @Component({
     selector: 'app-tarea',
@@ -29,8 +31,9 @@ export class TareaComponent implements OnInit, OnDestroy {
   constructor(
     private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
+    private alertaServicio: AlertaService,
+    private formularioUtilServicio: FormularioUtilService
   ) {
-    this.TareaAjustada = new EventEmitter<boolean>();
    }
 
   ngOnDestroy(): void {
@@ -54,6 +57,7 @@ export class TareaComponent implements OnInit, OnDestroy {
 
   EditarTarea() {
     if(this.formularioTarea.invalid){
+      this.formularioUtilServicio.verificarFormulario(this.formularioTarea);
       return;
     }
     this.guardarCambios();
@@ -72,6 +76,7 @@ export class TareaComponent implements OnInit, OnDestroy {
       next: () => {
         this.editar = false;
         this.TareaAjustada.emit(true);
+        this.alertaServicio.mostrarAlerta('exito','Tarea actualizada correctamente.');
       }
     });
   }
@@ -82,6 +87,7 @@ export class TareaComponent implements OnInit, OnDestroy {
     .subscribe({
       next: () => {
         this.TareaAjustada.emit(true);
+        this.alertaServicio.mostrarAlerta('exito','Tarea eliminada correctamente.');
       }
     });
   }
@@ -95,6 +101,7 @@ export class TareaComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: () => {
         this.TareaAjustada.emit(true);
+        this.alertaServicio.mostrarAlerta('exito','Estado de tarea actualizado correctamente.');
       }
     });
   }
