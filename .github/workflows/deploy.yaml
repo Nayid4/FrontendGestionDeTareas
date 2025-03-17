@@ -24,7 +24,8 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build
+        run: npm run build -- --configuration=production
+
 
       - name: Deploy to Github pages
         env:
