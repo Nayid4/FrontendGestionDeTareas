@@ -3,7 +3,9 @@ import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.ser
 import { ListaDeTareas } from '../../../core/models/ListaDeTareas.model';
 import { ListaDeTareasComponent } from '../../../shared/components/lista-de-tareas/lista-de-tareas.component';
 import { AgregarListaDeTareaComponent } from "../../../shared/components/agregar-lista-de-tarea/agregar-lista-de-tarea.component";
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import { CrearListaDeTareas } from '../../../core/models/comandos.model';
+import { AlertaService } from '../../../core/services/alerta.service';
 
 @Component({
     selector: 'app-inicio',
@@ -23,6 +25,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   constructor(
     private listaDeTareasService: ListaDeTareasService,
+    private alertaServicio: AlertaService,
   ) { }
 
   ngOnDestroy(): void {
@@ -31,30 +34,24 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.listaDeTareasService.listaDeTareas$.subscribe({
+    this.listaDeTareasService.listaDeTareas$
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
       next: (nuevaLista) => {
-        if (this.listaTareas.length === 0) {
-          // Si la lista está vacía, inicializa con los datos actuales
-          this.listaTareas = nuevaLista;
-        } else {
-          const idsAnteriores = new Set(this.listaTareas.map(t => t.id));
-          const idsNuevos = new Set(nuevaLista.map(t => t.id));
-  
-          if (nuevaLista.length > this.listaTareas.length) {
-            // Buscar la tarea que no estaba antes (agregada)
-            const nuevaTarea = nuevaLista.find(t => !idsAnteriores.has(t.id));
-            if (nuevaTarea) {
-              this.listaTareas = [...this.listaTareas, nuevaTarea];
-            }
-          } else if (nuevaLista.length < this.listaTareas.length) {
-            // Se eliminó una tarea, mantener solo las que siguen en la nueva lista
-            this.listaTareas = this.listaTareas.filter(t => idsNuevos.has(t.id));
-          }
-        }
+        this.listaTareas = nuevaLista;
       }
     });
   }
   
+  crearListaDeTareas(comando: CrearListaDeTareas) {
+    this.listaDeTareasService.Crear(comando)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: () => {
+        this.alertaServicio.mostrarAlerta('exito', 'Lista de tareas creada correctamente.');
+      }
+    });
+  }
   
   
 }
