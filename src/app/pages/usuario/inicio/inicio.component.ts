@@ -3,7 +3,9 @@ import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.ser
 import { ListaDeTareas } from '../../../core/models/ListaDeTareas.model';
 import { ListaDeTareasComponent } from '../../../shared/components/lista-de-tareas/lista-de-tareas.component';
 import { AgregarListaDeTareaComponent } from "../../../shared/components/agregar-lista-de-tarea/agregar-lista-de-tarea.component";
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import { ActualizarListaDeTareas, CrearListaDeTareas, FiltrarPorEstado } from '../../../core/models/comandos.model';
+import { AlertaService } from '../../../core/services/alerta.service';
 
 @Component({
     selector: 'app-inicio',
@@ -23,6 +25,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   constructor(
     private listaDeTareasService: ListaDeTareasService,
+    private alertaServicio: AlertaService,
   ) { }
 
   ngOnDestroy(): void {
@@ -31,30 +34,53 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.listaDeTareasService.listaDeTareas$.subscribe({
-      next: (nuevaLista) => {
-        if (this.listaTareas.length === 0) {
-          // Si la lista está vacía, inicializa con los datos actuales
-          this.listaTareas = nuevaLista;
-        } else {
-          const idsAnteriores = new Set(this.listaTareas.map(t => t.id));
-          const idsNuevos = new Set(nuevaLista.map(t => t.id));
-  
-          if (nuevaLista.length > this.listaTareas.length) {
-            // Buscar la tarea que no estaba antes (agregada)
-            const nuevaTarea = nuevaLista.find(t => !idsAnteriores.has(t.id));
-            if (nuevaTarea) {
-              this.listaTareas = [...this.listaTareas, nuevaTarea];
-            }
-          } else if (nuevaLista.length < this.listaTareas.length) {
-            // Se eliminó una tarea, mantener solo las que siguen en la nueva lista
-            this.listaTareas = this.listaTareas.filter(t => idsNuevos.has(t.id));
-          }
+    this.listaDeTareasService.listaDeTareas$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (nuevaLista) => {
+          this.listaTareas = this.actualizarListasSinReasignar(nuevaLista);
         }
+      });
+  }
+  
+  private actualizarListasSinReasignar(nuevaLista: ListaDeTareas[]): ListaDeTareas[] {
+    return nuevaLista.map(nueva => {
+      const existente = this.listaTareas.find(lista => lista.id === nueva.id);
+      return existente && JSON.stringify(existente) === JSON.stringify(nueva) ? existente : nueva;
+    });
+  }
+  
+  
+  crearListaDeTareas(comando: CrearListaDeTareas) {
+    this.listaDeTareasService.Crear(comando)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: () => {
+        this.alertaServicio.mostrarAlerta('exito', 'Lista de tareas creada correctamente.');
       }
     });
   }
   
+  eliminarListaDeTareas(id: string) {
+    this.listaDeTareasService.Eliminar(id)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: () => {
+        this.listaTareas = this.listaTareas.filter((lista) => lista.id !== id);
+        this.alertaServicio.mostrarAlerta('exito', 'Lista de tareas eliminada correctamente.');
+      }
+    });
+  }
+  
+  editarListaDeTareas(comando: FiltrarPorEstado): void {
+    this.listaDeTareasService.FiltrarPorEstado(comando)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((listaDeTareas) => {
+        this.listaTareas = this.listaTareas.map((lista) =>
+          lista.id === listaDeTareas.id ? { ...listaDeTareas } : lista
+        );
+      });
+  }
   
   
 }

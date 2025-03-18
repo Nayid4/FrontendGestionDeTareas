@@ -21,26 +21,18 @@ import { CrearListaDeTareas } from '../../../core/models/comandos.model';
     templateUrl: './agregar-lista-de-tarea.component.html',
     styleUrl: './agregar-lista-de-tarea.component.css'
 })
-export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
-   
+export class AgregarListaDeTareaComponent  implements OnInit {
+  @Output() listaCreada = new EventEmitter<CrearListaDeTareas>();
   agregar: boolean = false;
   formularioAgregarListaDeTareas!: FormGroup;
-  private unsubscribe$ = new Subject<void>();
   
   constructor(
-    private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
-    private alertaServicio: AlertaService,
     private formularioUtilServicio: FormularioUtilService
   ) { }
 
   ngOnInit(): void {
     this.incializarFormulario();
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
   incializarFormulario(){
@@ -55,25 +47,23 @@ export class AgregarListaDeTareaComponent  implements OnInit, OnDestroy {
   }
 
   AgregarListaDeTareas() {
-    if(this.formularioAgregarListaDeTareas.invalid){
+    if (this.formularioAgregarListaDeTareas.invalid) {
       this.formularioUtilServicio.verificarFormulario(this.formularioAgregarListaDeTareas);
       return;
     }
 
     const comando: CrearListaDeTareas = {
       titulo: this.formularioAgregarListaDeTareas.get('titulo')?.value
-    }
+    };
 
-    this.listaDeTareasService.Crear(comando)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: () => {
-        this.incializarFormulario();
-        this.agregar = false;
-        this.alertaServicio.mostrarAlerta('exito','Lista de tareas creada correctamente.');
-      }
-    })
+    this.listaCreada.emit(comando);
+    this.incializarFormulario();
+    this.agregar = false;
   }
 
+  campoInvalido(nombreCampo: string): boolean {
+    const titulo = this.formularioAgregarListaDeTareas.get(nombreCampo);
+    return !!titulo && titulo.invalid && titulo.touched;
+  }
   
 }

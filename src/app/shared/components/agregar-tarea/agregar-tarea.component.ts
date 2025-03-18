@@ -24,28 +24,19 @@ import { AgregarTarea } from '../../../core/models/comandos.model';
     templateUrl: './agregar-tarea.component.html',
     styleUrl: './agregar-tarea.component.css'
 })
-export class AgregarTareaComponent implements OnInit ,OnDestroy {
-  @Input() IdListaDeTareas!: string;
-  @Output() TareaAgregada = new EventEmitter<boolean>();
+export class AgregarTareaComponent implements OnInit {
+  @Output() tareaAgregada = new EventEmitter<ComandoTarea>();
 
   agregar: boolean = false;
   formularioAgregarTarea!: FormGroup;
-  private unsubscribe$ = new Subject<void>();
   
   constructor(
-    private listaDeTareasService: ListaDeTareasService,
     private fb: FormBuilder,
-    private alertaServicio: AlertaService,
     private formularioUtilServicio: FormularioUtilService
   ) { }
 
   ngOnInit(): void {
     this.incializarFormulario();
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
   incializarFormulario(){
@@ -72,21 +63,13 @@ export class AgregarTareaComponent implements OnInit ,OnDestroy {
       estado: this.formularioAgregarTarea.get('estado')?.value
     }
 
-    const comandoTarea: AgregarTarea = {
-      idListaDeTareas: this.IdListaDeTareas,
-      tarea: tarea
-    }
-
-    this.listaDeTareasService.AgregarTarea(comandoTarea)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: () => {
-        this.incializarFormulario();
-        this.agregar = false;
-        this.TareaAgregada.emit(true);
-        this.alertaServicio.mostrarAlerta('exito','Tarea creada correctamente.');
-      }
-    })
+    this.incializarFormulario();
+    this.agregar = false;
+    this.tareaAgregada.emit(tarea);
   }
 
+  campoInvalido(nombreCampo: string): boolean {
+    const titulo = this.formularioAgregarTarea.get(nombreCampo);
+    return !!titulo && titulo.invalid && titulo.touched;
+  }
 }

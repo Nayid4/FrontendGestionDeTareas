@@ -1,49 +1,40 @@
-import { Component, EventEmitter, Input,  OnDestroy,  OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Tarea } from '../../../core/models/Tarea.model';
-import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
-import { AlertaService } from '../../../core/services/alerta.service';
-import { FormularioUtilService } from '../../../core/services/formulario-util.service';
+import { Subject } from 'rxjs';
 import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.component";
 import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
 import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
 import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
-import { ActualizarEstadoDeTarea, AgregarTarea, EliminarTarea } from '../../../core/models/comandos.model';
 
 @Component({
     selector: 'app-tarea',
     standalone: true,
     imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule,
-    EditarIconoComponent,
-    EliminarIconoComponent,
-    CerrarIconoComponent,
-    ValidarIconoComponent
-],
+        FormsModule,
+        ReactiveFormsModule,
+        CommonModule,
+        EditarIconoComponent,
+        EliminarIconoComponent,
+        CerrarIconoComponent,
+        ValidarIconoComponent
+    ],
     templateUrl: './tarea.component.html',
     styleUrl: './tarea.component.css'
 })
 export class TareaComponent implements OnInit, OnDestroy {
-  @Input() Tarea!: Tarea;
-  @Input() IdListaDeTareas!: string;
-  @Output() TareaAjustada = new EventEmitter<boolean>();
+  @Input() tarea!: Tarea;
+  @Input() idListaDeTareas!: string;
+  @Output() tareaActualizada = new EventEmitter<Tarea>();
+  @Output() tareaEliminada = new EventEmitter<string>();
+  @Output() estadoCambiado = new EventEmitter<string>();
 
   editar: boolean = false;
   formularioTarea!: FormGroup;
-
   private unsubscribe$ = new Subject<void>();
 
-  constructor(
-    private listaDeTareasService: ListaDeTareasService,
-    private fb: FormBuilder,
-    private alertaServicio: AlertaService,
-    private formularioUtilServicio: FormularioUtilService
-  ) {
-   }
+  constructor(private fb: FormBuilder) {}
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -54,85 +45,41 @@ export class TareaComponent implements OnInit, OnDestroy {
     this.inicializarFormulario();
   }
 
-  inicializarFormulario(){
+  inicializarFormulario() {
     this.formularioTarea = this.fb.group({
-      id: [this.Tarea.id],
-      titulo: [this.Tarea.titulo, [Validators.required]],
-      descripcion: [this.Tarea.descripcion, [Validators.required]],
-      estado: [this.Tarea.estado],
-      estadoTarea: [this.Tarea.estado === 'Completada' ? true : false],
+      id: [this.tarea.id],
+      titulo: [this.tarea.titulo, [Validators.required]],
+      descripcion: [this.tarea.descripcion, [Validators.required]],
+      estado: [this.tarea.estado],
+      estadoTarea: [this.tarea.estado === 'Completada']
     });
   }
 
-  EditarTarea() {
-    if(this.formularioTarea.invalid){
-      this.formularioUtilServicio.verificarFormulario(this.formularioTarea);
-      return;
-    }
+  editarTarea() {
+    if (this.formularioTarea.invalid) return;
     this.guardarCambios();
   }
 
   guardarCambios() {
     const tareaActualizada: Tarea = {
-      ...this.Tarea,
+      ...this.tarea,
       ...this.formularioTarea.value,
       estado: this.formularioTarea.value.estadoTarea ? 'Completada' : 'Pendiente'
     };
-
-    const comando: AgregarTarea = {
-      idListaDeTareas: this.IdListaDeTareas,
-      tarea: tareaActualizada
-    };
-
-    this.listaDeTareasService.ActualizarTarea(comando)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: () => {
-        this.editar = false;
-        this.TareaAjustada.emit(true);
-        this.alertaServicio.mostrarAlerta('exito','Tarea actualizada correctamente.');
-      }
-    });
+    this.tareaActualizada.emit(tareaActualizada);
+    this.editar = false;
   }
 
-  EliminarTarea(id: string) {
-
-    const comando: EliminarTarea = {
-      idListaDeTareas: this.IdListaDeTareas,
-      idTarea: id
-    };
-
-    this.listaDeTareasService.EliminarTarea(comando)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: () => {
-        this.TareaAjustada.emit(true);
-        this.alertaServicio.mostrarAlerta('exito','Tarea eliminada correctamente.');
-      }
-    });
+  eliminarTarea() {
+    this.tareaEliminada.emit(this.tarea.id);
   }
 
   cambiarEstadoTarea() {
-    this.formularioTarea.patchValue({
-      estado: this.formularioTarea.value.estadoTarea  ? 'Pendiente' : 'Completada'
-    });
-
-    const comando: ActualizarEstadoDeTarea = {
-      idListaDeTareas: this.IdListaDeTareas,
-      idTarea: this.Tarea.id,
-      estado: this.formularioTarea.value.estado
-    }
-
-    this.listaDeTareasService.ActualizarEstadoDeTarea(comando)
-    .pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: () => {
-        this.TareaAjustada.emit(true);
-        this.alertaServicio.mostrarAlerta('exito','Estado de tarea actualizado correctamente.');
-      }
-    });
+    const nuevoEstado = this.formularioTarea.value.estadoTarea ? 'Pendiente' : 'Completada';
+    this.estadoCambiado.emit(nuevoEstado);
   }
 
-  MostraroOcultarFormulario() {
+  mostrarOcultarFormulario() {
     this.editar = !this.editar;
   }
 

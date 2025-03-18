@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import { ListaDeTareas } from '../models/ListaDeTareas.model';
 import { environment } from '../../../environments/environment.development';
 import { BehaviorSubject } from 'rxjs';
@@ -25,22 +25,26 @@ export class ListaDeTareasService {
   listaDeTareas$ = this.listaDeTareasSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    this.cargarLista();
+    this.cargarLista().subscribe();
   }
+  
 
-  private cargarLista() {
-    this.http.get<ListaDeTareas[]>(`${this.api}/${this.endpoint}`).subscribe(lista => {
-      this.listaDeTareasSubject.next(lista);
-    });
+  private cargarLista(): Observable<ListaDeTareas[]> {
+    return this.http.get<ListaDeTareas[]>(`${this.api}/${this.endpoint}`).pipe(
+      tap(lista => this.listaDeTareasSubject.next(lista))
+    );
   }
+  
 
   notifyUpdate() {
-    this.cargarLista();
+    this.cargarLista().subscribe();
   }
+  
 
   ListarTodos(): Observable<ListaDeTareas[]> {
-    return this.listaDeTareas$;
+    return this.listaDeTareas$.pipe(take(1));
   }
+  
 
   Crear(data: CrearListaDeTareas): Observable<void> {
     return this.http.post<void>(`${this.api}/${this.endpoint}`, data).pipe(

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ListaDeTareas } from '../../../core/models/ListaDeTareas.model';
 import { ListaDeTareasService } from '../../../core/services/lista-de-tareas.service';
 import { TareaComponent } from '../tarea/tarea.component';
@@ -13,7 +13,8 @@ import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.comp
 import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
 import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
 import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
-import { ActualizarListaDeTareas, FiltrarPorEstado } from '../../../core/models/comandos.model';
+import { ActualizarEstadoDeTarea, ActualizarListaDeTareas, AgregarTarea, EliminarTarea, FiltrarPorEstado } from '../../../core/models/comandos.model';
+import { ComandoTarea, Tarea } from '../../../core/models/Tarea.model';
 
 @Component({
     selector: 'app-lista-de-tareas',
@@ -31,17 +32,18 @@ import { ActualizarListaDeTareas, FiltrarPorEstado } from '../../../core/models/
     ValidarIconoComponent
 ],
     templateUrl: './lista-de-tareas.component.html',
-    styleUrl: './lista-de-tareas.component.css'
+    styleUrl: './lista-de-tareas.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ListaDeTareasComponent implements OnInit, OnDestroy {
-
+export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
   @Input() ListaDeTareas!: ListaDeTareas;
+  @Output() listaEliminada = new EventEmitter<string>();
+  @Output() listaActualizada = new EventEmitter<FiltrarPorEstado>();
   formularioListaDeTareas!: FormGroup;
-  editar: boolean = false;
-  filtro: string = 'Todas';
-
-  listaDeFiltros: string[] = ['Todas', 'Completada', 'Pendiente'];
-
+  editar = false;
+  filtro = 'Todas';
+  listaTareas!: ListaDeTareas;
+  listaDeFiltros = ['Todas', 'Completada', 'Pendiente'];
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -50,57 +52,79 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private alertaServicio: AlertaService,
     private formularioUtilServicio: FormularioUtilService
-  ) { }
+  ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ListaDeTareas'] && !changes['ListaDeTareas'].firstChange) {
+      const anterior = changes['ListaDeTareas'].previousValue;
+      const actual = changes['ListaDeTareas'].currentValue;
+  
+      // Solo actualiza si el valor realmente cambió
+      if (JSON.stringify(anterior) !== JSON.stringify(actual)) {
+        this.listaTareas = { ...actual };
+        this.cdRef.markForCheck();
+        console.log("El componente ListaDeTareas ha cambiado: ", this.listaTareas.titulo);
+        this.ajustarLista(this.filtro);
+        console.log("Estado actual de la lista de tareas: ", this.filtro);
+      }else{
+        console.log("El componente ListaDeTareas no ha cambiado");
+      }
+    }
+  }
+  
+
+  ngOnInit(): void {
+    this.listaTareas = { ...this.ListaDeTareas };
+    this.inicializarFormulario();
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
 
-  ngOnInit(): void {
-    this.inicializarFormulario();
-  }
-
-  inicializarFormulario(){
+  inicializarFormulario(): void {
     this.formularioListaDeTareas = this.fb.group({
-      id: [this.ListaDeTareas.id],
-      titulo: [this.ListaDeTareas.titulo, [Validators.required]]
+      id: [this.listaTareas.id],
+      titulo: [this.listaTareas.titulo, [Validators.required]]
     });
   }
 
-  EliminarListaDeTareas(id: string): void {
-    this.listaDeTareasService.Eliminar(id).pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: () => {
-        this.alertaServicio.mostrarAlerta('exito','Lista de tareas eliminada correctamente.');
-      }
-    });
+  eliminarListaDeTareas(): void {
+    this.listaEliminada.emit(this.listaTareas.id);
   }
 
-  EditarListaDeTareas() {
-    if(this.formularioListaDeTareas.invalid){
+  editarListaDeTareas(): void {
+    if (this.formularioListaDeTareas.invalid) {
       this.formularioUtilServicio.verificarFormulario(this.formularioListaDeTareas);
       return;
     }
+    const comando: ActualizarListaDeTareas = this.formularioListaDeTareas.value;
 
-    const comando: ActualizarListaDeTareas = {
-      id: this.formularioListaDeTareas.get('id')?.value,
-      titulo: this.formularioListaDeTareas.get('titulo')?.value
-    }
-
-    this.listaDeTareasService.Actualizar(comando)
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: () => {
-        this.editar = false;
-        this.ListaDeTareas.titulo = this.formularioListaDeTareas.get('titulo')?.value;
-        this.cdRef.detectChanges();
-        this.alertaServicio.mostrarAlerta('exito','Lista de tareas actualizada correctamente.');
-      }
+    this.listaDeTareasService.Actualizar(comando).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+      this.editar = false;
+      this.listaTareas.titulo = comando.titulo;
+      this.cdRef.markForCheck();
+      this.alertaServicio.mostrarAlerta('exito', 'Lista de tareas actualizada correctamente.');
     });
-
   }
 
-  MostraroOcultarFormulario() {
+  ajustarLista(estado?: string): void {
+    const comando: FiltrarPorEstado = { idListaDeTareas: this.listaTareas.id, estadoTarea: estado ?? 'Todas' };
+
+    this.listaActualizada.emit(comando);
+  }
+
+  filtrarTareas(evento: Event) {
+    const estado = (evento.target as HTMLButtonElement).value;
+
+    if (estado === null) return;
+
+    this.ajustarLista(estado);
+    this.filtro = estado!;
+  }
+
+  mostraroOcultarFormulario() {
     this.editar = !this.editar;
   }
 
@@ -109,41 +133,40 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy {
     this.inicializarFormulario();
   }
 
-  AjusteDeLista(evento: boolean | undefined, estado?: string): void {
-    
-    if (evento === undefined) {
-      return;
-    }
-
-    if (evento) {
-
-      const comando: FiltrarPorEstado = {
-        idListaDeTareas: this.ListaDeTareas.id,
-        estadoTarea: estado ?? 'Todas'
-      }
-
-      this.listaDeTareasService.FiltrarPorEstado(comando)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: (listaDeTareas) => {
-          this.ListaDeTareas = listaDeTareas;
-          this.cdRef.detectChanges();
-        }
-      });
-    }
+  actualizarTarea(tareaActualizada: Tarea): void {
+    const comando: AgregarTarea = { idListaDeTareas: this.listaTareas.id, tarea: tareaActualizada };
+    this.listaDeTareasService.ActualizarTarea(comando).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+      this.alertaServicio.mostrarAlerta('exito', 'Tarea actualizada correctamente.');
+      this.ajustarLista(this.filtro);
+    });
   }
 
-
-  filtrarTareas(evento: Event) {
-    const estado = (evento.target as HTMLButtonElement).value;
-
-    if (estado === null) {
-      return;
-    }
-
-    this.AjusteDeLista(true, estado);
-
-    this.filtro = estado!;
+  eliminarTarea(idTarea: string): void {
+    const comando: EliminarTarea = { idListaDeTareas: this.listaTareas.id, idTarea };
+    this.listaDeTareasService.EliminarTarea(comando).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+      this.alertaServicio.mostrarAlerta('exito', 'Tarea eliminada correctamente.');
+      this.ajustarLista(this.filtro);
+    });
   }
-  
+
+  cambiarEstadoTarea(id: string, estado: string): void {
+    const comando: ActualizarEstadoDeTarea = { idListaDeTareas: this.listaTareas.id, idTarea: id, estado };
+    this.listaDeTareasService.ActualizarEstadoDeTarea(comando).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+      this.alertaServicio.mostrarAlerta('exito', 'Estado de tarea actualizado correctamente.');
+      this.ajustarLista(this.filtro);
+    });
+  }
+
+  agregarTareaAListaDeTareas(tarea: ComandoTarea): void {
+    const comandoTarea: AgregarTarea = { idListaDeTareas: this.listaTareas.id, tarea };
+    this.listaDeTareasService.AgregarTarea(comandoTarea).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+      this.alertaServicio.mostrarAlerta('exito', 'Tarea creada correctamente.');
+      this.ajustarLista(this.filtro);
+    });
+  }
+
+  campoInvalido(nombreCampo: string): boolean {
+    const campo = this.formularioListaDeTareas.get(nombreCampo);
+    return !!campo && campo.invalid && campo.touched;
+  }
 }
