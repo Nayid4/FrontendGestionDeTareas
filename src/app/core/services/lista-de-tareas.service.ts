@@ -53,9 +53,7 @@ export class ListaDeTareasService {
   }
 
   Actualizar(data: ActualizarListaDeTareas): Observable<void> {
-    return this.http.put<void>(`${this.api}/${this.endpoint}/${data.id}`, data).pipe(
-      tap(() => this.notifyUpdate())
-    );
+    return this.http.put<void>(`${this.api}/${this.endpoint}/${data.id}`, data)
   }
 
   Eliminar(id: string): Observable<void> {
