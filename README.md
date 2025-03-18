@@ -1,27 +1,103 @@
-# FrontendGestionDeTareas
+# Frontend - Gestor de Tareas
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.12.
+Este es el frontend de la aplicación de gestión de tareas desarrollado en **Angular 19**. El proyecto está estructurado para facilitar el mantenimiento y la escalabilidad, cuenta con un diseño moderno usando **TailwindCSS** y está dockerizado para su despliegue en diferentes entornos.
 
-## Development server
+## 🌐 Demo
+El frontend está desplegado en GitHub Pages y se puede acceder en el siguiente enlace:
+🔗 [Frontend Gestion De Tareas](https://nayid4.github.io/FrontendGestionDeTareas/)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 📂 Estructura del Proyecto
 
-## Code scaffolding
+El proyecto sigue una estructura modular para organizar mejor los archivos y la lógica del código:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```
+FRONTENDGESTIONDETAREAS/
+│-- .github/workflows/        # Configuraciones para CI/CD en GitHub Actions
+│   ├── deploy.yaml           # Configuración para despliegue en GitHub Pages
+│
+│-- config/                   # Archivos de configuración
+│   ├── default.conf
+│
+│-- src/
+│   ├── app/
+│   │   ├── assets/          # Recursos estáticos (imágenes, fuentes, etc.)
+│   │   ├── core/            # Código principal y servicios
+│   │   │   ├── guards/      # Guards de autenticación y rutas
+│   │   │   ├── interceptors/# Interceptores HTTP
+│   │   │   ├── models/      # Modelos de datos
+│   │   │   ├── services/    # Servicios de API y lógica de negocio
+│   │   ├── pages/           # Páginas principales del frontend
+│   │   ├── shared/          # Componentes reutilizables
+│   │   │   ├── components/  # Componentes compartidos
+│   │   │   │   ├── agregar-lista-de-tarea/
+│   │   │   │   ├── agregar-tarea/
+│   │   │   │   ├── alerta/  # Alertas para mensajes
+│   │   │   │   ├── lista-de-tareas/
+│   │   │   │   ├── tarea/
+│   │   ├── directives/      # Directivas personalizadas
+│   │   ├── pipes/           # Pipes personalizados
+│   │   ├── environments/    # Configuración de entornos (Desarrollo, Docker, Producción)
+│   │   │   ├── environment.development.ts
+│   │   │   ├── environment.docker.ts
+│   │   │   ├── environment.ts
+│   │   ├── app.routes.ts    # Rutas de la aplicación
+│   │   ├── app.config.ts    # Configuración general
+│   │   ├── app.component.*  # Componente principal
+│   │
+│   ├── index.html           # Archivo principal de la aplicación
+│   ├── main.server.ts       # Configuración del servidor en Angular Universal
+```
 
-## Build
+## 🛠️ Tecnologías Utilizadas
+- **Angular 19** - Framework frontend
+- **TailwindCSS** - Para estilos y diseño moderno
+- **Docker** - Para la contenedorización de la aplicación
+- **GitHub Actions** - Para CI/CD y despliegue en GitHub Pages
+- **Icons** - Tomados de [Google Fonts Icons](https://fonts.google.com/icons)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 🚀 Despliegue y Configuración
 
-## Running unit tests
+### 🔹 Ejecución en Local
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. Clonar el repositorio:
+   ```sh
+   git clone https://github.com/nayid4/FrontendGestionDeTareas.git
+   cd FrontendGestionDeTareas
+   ```
+2. Instalar dependencias:
+   ```sh
+   npm install
+   ```
+3. Ejecutar el proyecto en desarrollo:
+   ```sh
+   ng serve
+   ```
+   La aplicación se iniciará en `http://localhost:4200/`
 
-## Running end-to-end tests
+### 🔹 Ejecución con Docker
+1. Construir y ejecutar los contenedores:
+   ```sh
+   docker-compose up --build
+   ```
+2. Acceder a `http://localhost:4200/`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### 🔹 Despliegue en Producción (GitHub Pages)
+El despliegue en GitHub Pages está automatizado con **GitHub Actions**. Cada vez que se hace un push a la rama `main`, la aplicación se compila y se publica automáticamente en GitHub Pages.
 
-## Further help
+## 🔍 Validaciones y Funcionalidades
+- Se han implementado **validaciones** en los formularios para evitar datos incorrectos.
+- Se utilizan **alertas** para notificar errores y acciones realizadas.
+- Se manejan los ciclos de vida de los componentes como **OnInit** para inicializaciones y **OnDestroy** para liberar recursos y evitar fugas de memoria.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📌 Contribución
+Si deseas contribuir, por favor sigue estos pasos:
+1. Realiza un fork del repositorio
+2. Crea una nueva rama con tu funcionalidad (`git checkout -b nueva-funcionalidad`)
+3. Realiza los cambios y haz commit (`git commit -m 'Agrega nueva funcionalidad'`)
+4. Sube los cambios (`git push origin nueva-funcionalidad`)
+5. Crea un Pull Request
+
+---
+
+Este proyecto está en constante mejora, cualquier sugerencia es bienvenida. 🚀
+
