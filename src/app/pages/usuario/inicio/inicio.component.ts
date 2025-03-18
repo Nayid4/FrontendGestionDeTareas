@@ -18,7 +18,6 @@ import { AlertaService } from '../../../core/services/alerta.service';
     styleUrl: './inicio.component.css'
 })
 export class InicioComponent implements OnInit, OnDestroy {
-
   listaTareas: ListaDeTareas[] = [];
 
   private unsubscribe$ = new Subject<void>();
@@ -82,5 +81,15 @@ export class InicioComponent implements OnInit, OnDestroy {
       });
   }
   
-  
+  editarTituloListaDeTareas(comando: ActualizarListaDeTareas) {
+    console.log(comando);
+    console.log("Hola")
+    this.listaDeTareasService.Actualizar(comando).pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: () => {
+        this.listaTareas = this.listaTareas.map((lista) =>
+          lista.id === comando.id ? { ...lista, titulo: comando.titulo } : lista
+        );
+        this.alertaServicio.mostrarAlerta('exito', 'Lista de tareas actualizada correctamente.');
+      }});
+  }
 }

@@ -7,6 +7,7 @@ import { EditarIconoComponent } from "../../icons/editar-icono/editar-icono.comp
 import { EliminarIconoComponent } from "../../icons/eliminar-icono/eliminar-icono.component";
 import { CerrarIconoComponent } from "../../icons/cerrar-icono/cerrar-icono.component";
 import { ValidarIconoComponent } from "../../icons/validar-icono/validar-icono.component";
+import { AlertaService } from '../../../core/services/alerta.service';
 
 @Component({
     selector: 'app-tarea',
@@ -34,7 +35,7 @@ export class TareaComponent implements OnInit, OnDestroy {
   formularioTarea!: FormGroup;
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private alertaServicio: AlertaService) {}
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -57,6 +58,11 @@ export class TareaComponent implements OnInit, OnDestroy {
 
   editarTarea() {
     if (this.formularioTarea.invalid) return;
+    if (this.formularioTarea.value.titulo === this.tarea.titulo && this.formularioTarea.value.descripcion === this.tarea.descripcion) {
+      this.alertaServicio.mostrarAlerta('info', 'No se han realizado cambios.');
+      this.editar = false;
+      return;
+    }
     this.guardarCambios();
   }
 
@@ -86,5 +92,6 @@ export class TareaComponent implements OnInit, OnDestroy {
   cancelarEdicion() {
     this.editar = false;
     this.inicializarFormulario();
+    this.alertaServicio.mostrarAlerta('info', 'Se ha cancelado la actualización.');
   }
 }

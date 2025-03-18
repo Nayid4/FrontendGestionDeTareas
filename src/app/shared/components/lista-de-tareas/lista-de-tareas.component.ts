@@ -38,6 +38,7 @@ import { ComandoTarea, Tarea } from '../../../core/models/Tarea.model';
 export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
   @Input() ListaDeTareas!: ListaDeTareas;
   @Output() listaEliminada = new EventEmitter<string>();
+  @Output() tituloListaActualizada = new EventEmitter<ActualizarListaDeTareas>();
   @Output() listaActualizada = new EventEmitter<FiltrarPorEstado>();
   formularioListaDeTareas!: FormGroup;
   editar = false;
@@ -63,11 +64,7 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
       if (JSON.stringify(anterior) !== JSON.stringify(actual)) {
         this.listaTareas = { ...actual };
         this.cdRef.markForCheck();
-        console.log("El componente ListaDeTareas ha cambiado: ", this.listaTareas.titulo);
         this.ajustarLista(this.filtro);
-        console.log("Estado actual de la lista de tareas: ", this.filtro);
-      }else{
-        console.log("El componente ListaDeTareas no ha cambiado");
       }
     }
   }
@@ -101,12 +98,13 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
     }
     const comando: ActualizarListaDeTareas = this.formularioListaDeTareas.value;
 
-    this.listaDeTareasService.Actualizar(comando).pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+    if (comando.titulo === this.listaTareas.titulo) {
       this.editar = false;
-      this.listaTareas.titulo = comando.titulo;
-      this.cdRef.markForCheck();
-      this.alertaServicio.mostrarAlerta('exito', 'Lista de tareas actualizada correctamente.');
-    });
+      this.alertaServicio.mostrarAlerta('info', 'Se ingreso el mismo titulo.');
+      return;
+    }
+    this.tituloListaActualizada.emit(comando);
+    this.editar = false;
   }
 
   ajustarLista(estado?: string): void {
@@ -131,6 +129,7 @@ export class ListaDeTareasComponent implements OnInit, OnDestroy, OnChanges {
   cancelarEdicion() {
     this.editar = false;
     this.inicializarFormulario();
+    this.alertaServicio.mostrarAlerta('info', 'Se ha cancelado la actualización.');
   }
 
   actualizarTarea(tareaActualizada: Tarea): void {
