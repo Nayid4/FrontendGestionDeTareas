@@ -13,7 +13,7 @@
                 formControlName="titulo" 
                 placeholder="Introduzca el título de la lista..." 
                 class="w-full bg-gray-600/50 border-1 rounded-sm border-gray-400/60 focus:border-white outline-none p-1 text-md focus:ring-1 focus:ring-white transition-all duration-300"
-                [ngClass]="{'border-red-500': tituloInvalido()}"
+                [ngClass]="{'border-red-500': campoInvalido('titulo')}"
             />
 
             <!-- Botones de acción -->

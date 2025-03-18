@@ -25,7 +25,6 @@ export class AgregarListaDeTareaComponent  implements OnInit {
   @Output() listaCreada = new EventEmitter<CrearListaDeTareas>();
   agregar: boolean = false;
   formularioAgregarListaDeTareas!: FormGroup;
-  private unsubscribe$ = new Subject<void>();
   
   constructor(
     private fb: FormBuilder,
@@ -62,11 +61,9 @@ export class AgregarListaDeTareaComponent  implements OnInit {
     this.agregar = false;
   }
 
-  tituloInvalido(): boolean {
-    const titulo = this.formularioAgregarListaDeTareas.get('titulo');
+  campoInvalido(nombreCampo: string): boolean {
+    const titulo = this.formularioAgregarListaDeTareas.get(nombreCampo);
     return !!titulo && titulo.invalid && titulo.touched;
   }
-  
-
   
 }

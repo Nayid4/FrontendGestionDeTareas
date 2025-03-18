@@ -8,7 +8,11 @@
         <ul class="flex gap-3">
             @for (lista of listaTareas; track lista.id) {
                 <li>
-                    <app-lista-de-tareas [ListaDeTareas]="lista"></app-lista-de-tareas>
+                    <app-lista-de-tareas 
+                        [ListaDeTareas]="lista" 
+                        (listaEliminada)="eliminarListaDeTareas($event)"
+                        (listaActualizada)="editarListaDeTareas($event)"
+                    />
                 </li>
             } 
         </ul>
