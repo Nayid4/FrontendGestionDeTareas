@@ -1,16 +1,30 @@
-# Frontend - Gestor de Tareas
+# Frontend - Gestión de Tareas
 
-Este es el frontend de la aplicación de gestión de tareas desarrollado en **Angular 19**. El proyecto está estructurado para facilitar el mantenimiento y la escalabilidad, cuenta con un diseño moderno usando **TailwindCSS** y está dockerizado para su despliegue en diferentes entornos.
+Este es el repositorio del frontend de la aplicación de gestión de tareas, desarrollado con **Angular 19**. La aplicación permite realizar operaciones CRUD sobre tareas y está diseñada con una estructura modular clara y bien organizada.
 
-## 🌐 Demo
-El frontend está desplegado en GitHub Pages y se puede acceder en el siguiente enlace:
-🔗 [Frontend Gestion De Tareas](https://nayid4.github.io/FrontendGestionDeTareas/)
+## 📁 Estructura del Proyecto
 
-## 📂 Estructura del Proyecto
+El proyecto sigue una estructura modular para facilitar la escalabilidad y el mantenimiento:
 
-El proyecto sigue una estructura modular para organizar mejor los archivos y la lógica del código:
+- **`src/app/core`**: Contiene la configuración principal, incluyendo:
+  - `guards/`: Definición de guardias de ruta.
+  - `interceptors/`: Interceptores para modificar solicitudes HTTP.
+  - `models/`: Modelos de datos utilizados en la aplicación.
+  - `services/`: Servicios que manejan la lógica de negocio y comunicación con el backend.
 
-```
+- **`src/app/shared/components`**: Componentes reutilizables como:
+  - `agregar-lista-de-tarea/`
+  - `agregar-tarea/`
+  - `alerta/`
+  - `lista-de-tareas/`
+  - `tarea/`
+
+- **`src/app/environments`**: Configuración de entornos:
+  - `environment.development.ts`: Variables para el entorno de desarrollo.
+  - `environment.docker.ts`: Configuración para el entorno en Docker.
+  - `environment.ts`: Configuración general del entorno.
+ 
+ ```
 FRONTENDGESTIONDETAREAS/
 │-- .github/workflows/        # Configuraciones para CI/CD en GitHub Actions
 │   ├── deploy.yaml           # Configuración para despliegue en GitHub Pages
@@ -48,56 +62,66 @@ FRONTENDGESTIONDETAREAS/
 │   ├── main.server.ts       # Configuración del servidor en Angular Universal
 ```
 
-## 🛠️ Tecnologías Utilizadas
-- **Angular 19** - Framework frontend
-- **TailwindCSS** - Para estilos y diseño moderno
-- **Docker** - Para la contenedorización de la aplicación
-- **GitHub Actions** - Para CI/CD y despliegue en GitHub Pages
-- **Icons** - Tomados de [Google Fonts Icons](https://fonts.google.com/icons)
+## 🚀 Tecnologías Utilizadas
 
-## 🚀 Despliegue y Configuración
+- **Angular 19**: Framework principal.
+- **TailwindCSS**: Para el diseño y estilización de la aplicación.
+- **Google Fonts Icons**: Para los iconos de la interfaz.
+- **Docker**: Para la contenedorización del frontend.
+- **GitHub Actions**: Para CI/CD en el despliegue en GitHub Pages.
 
-### 🔹 Ejecución en Local
+## 🔧 Instalación y Ejecución
 
-1. Clonar el repositorio:
-   ```sh
-   git clone https://github.com/nayid4/FrontendGestionDeTareas.git
-   cd FrontendGestionDeTareas
-   ```
-2. Instalar dependencias:
-   ```sh
-   npm install
-   ```
-3. Ejecutar el proyecto en desarrollo:
-   ```sh
-   ng serve
-   ```
-   La aplicación se iniciará en `http://localhost:4200/`
+### 1️⃣ Clonar el repositorio
+```sh
+    git clone https://github.com/Nayid4/FrontendGestionDeTareas.git
+    cd FrontendGestionDeTareas
+```
 
-### 🔹 Ejecución con Docker
-1. Construir y ejecutar los contenedores:
-   ```sh
-   docker-compose up --build
-   ```
-2. Acceder a `http://localhost:4200/`
+### 2️⃣ Instalar dependencias
+```sh
+    npm install
+```
 
-### 🔹 Despliegue en Producción (GitHub Pages)
-El despliegue en GitHub Pages está automatizado con **GitHub Actions**. Cada vez que se hace un push a la rama `main`, la aplicación se compila y se publica automáticamente en GitHub Pages.
+### 3️⃣ Ejecutar en desarrollo
+```sh
+    ng serve
+```
+La aplicación estará disponible en `http://localhost:4200`.
 
-## 🔍 Validaciones y Funcionalidades
-- Se han implementado **validaciones** en los formularios para evitar datos incorrectos.
-- Se utilizan **alertas** para notificar errores y acciones realizadas.
-- Se manejan los ciclos de vida de los componentes como **OnInit** para inicializaciones y **OnDestroy** para liberar recursos y evitar fugas de memoria.
+## 🐳 Ejecución con Docker
 
-## 📌 Contribución
-Si deseas contribuir, por favor sigue estos pasos:
-1. Realiza un fork del repositorio
-2. Crea una nueva rama con tu funcionalidad (`git checkout -b nueva-funcionalidad`)
-3. Realiza los cambios y haz commit (`git commit -m 'Agrega nueva funcionalidad'`)
-4. Sube los cambios (`git push origin nueva-funcionalidad`)
-5. Crea un Pull Request
+### Construcción y ejecución del contenedor
+```sh
+    docker-compose up --build
+```
+La aplicación estará expuesta en `http://localhost:4200` y usará la API dockerizada.
 
----
+## 📡 Despliegue
 
-Este proyecto está en constante mejora, cualquier sugerencia es bienvenida. 🚀
+Se han configurado tres formas de despliegue:
+
+1. **GitHub Pages**: La aplicación está desplegada en [GitHub Pages](https://nayid4.github.io/FrontendGestionDeTareas/) utilizando **CI/CD con GitHub Actions**. Se configuró un workflow que automatiza la construcción y el despliegue al realizar un push a la rama principal.
+
+2. **Docker**: Se creó un `Dockerfile` y un `docker-compose.yml` para desplegar el frontend junto con la API en un entorno completamente contenedorizado.
+
+3. **Desarrollo Local**: Puede ejecutarse con `ng serve` utilizando la API en local o en Azure.
+
+## 📌 Justificación de Enfoques y Herramientas
+
+- **Modularización**: El proyecto se estructuró en módulos bien definidos para facilitar la reutilización y mantenibilidad.
+- **Angular + TailwindCSS**: Se optó por esta combinación para un desarrollo ágil y estilización flexible.
+- **CI/CD con GitHub Actions**: Se automatizó el despliegue en GitHub Pages para facilitar la actualización de la aplicación.
+- **Docker**: Permite replicar entornos de ejecución fácilmente, asegurando que el frontend funcione correctamente con la API.
+- **Ciclo de Vida de Componentes**: Se utilizaron `OnInit` para inicialización y `OnDestroy` para limpiar suscripciones a servicios.
+
+## 🤝 Contribución
+
+Si deseas contribuir, realiza un **fork** del repositorio, crea una rama con tu funcionalidad y envía un **pull request**.
+
+## 📜 Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+
 
