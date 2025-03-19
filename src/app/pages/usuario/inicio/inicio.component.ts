@@ -82,8 +82,6 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
   
   editarTituloListaDeTareas(comando: ActualizarListaDeTareas) {
-    console.log(comando);
-    console.log("Hola")
     this.listaDeTareasService.Actualizar(comando).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: () => {
         this.listaTareas = this.listaTareas.map((lista) =>
