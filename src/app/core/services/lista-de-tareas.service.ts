@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, take, tap } from 'rxjs';
 import { ListaDeTareas } from '../models/ListaDeTareas.model';
 import { environment } from '../../../environments/environment.development';
@@ -30,7 +30,10 @@ export class ListaDeTareasService {
   
 
   private cargarLista(): Observable<ListaDeTareas[]> {
-    return this.http.get<ListaDeTareas[]>(`${this.api}/${this.endpoint}`).pipe(
+    return this.http.get<ListaDeTareas[]>(`${this.api}/${this.endpoint}`, {
+      headers: new HttpHeaders({ 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }),
+      params: { t: new Date().getTime().toString() } // Evita cache agregando timestamp
+    }).pipe(
       tap(lista => this.listaDeTareasSubject.next(lista))
     );
   }

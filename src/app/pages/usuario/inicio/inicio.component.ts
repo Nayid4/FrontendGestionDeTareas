@@ -33,14 +33,7 @@ export class InicioComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.listaDeTareasService.ListarTodos() // Asegúrate de que esta función haga la consulta a la API
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe({
-      next: (nuevaLista) => {
-        this.listaTareas = nuevaLista; // Reemplaza con la lista obtenida de la API
-      }
-    });
-
+    
     this.listaDeTareasService.listaDeTareas$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
