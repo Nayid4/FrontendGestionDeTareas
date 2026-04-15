@@ -1,4 +1,4 @@
 export const environment = {
-    apiUrlBase: 'http://localhost:80',
+    apiUrlBase: 'http//:internal-mini-proyecto-application-alb-886082670.us-east-1.elb.amazonaws.com',
     production: true
 };
